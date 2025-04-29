@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        p, button,label {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 18px;
+          color: blue;
+        }
+    </style>
+</head>
+<script src="data/vocab.js"></script>
+<script type="text/javascript">
+    window.onload = function (event) {
+        loadStart();
+    }
+    vocabpool = [];
+    function loadStart() {
+        s = ""
+        for (var i = 0; i < vocabs.length; i++) {
+            s += '<input type="checkbox" id="book_'+i.toString()+'" CHECKED/>';
+            /*el.setAttribute("type", "checkbox");
+            el.setAttribute("id", "book_" + i.toString());
+            el.setAttribute("name", "book_" + i.toString());
+            el.setAttribute("value", "entry_" + i.toString());*/
+
+
+            //el.setAttribute("checked",true)
+
+            s += '<label>'+vocabs[i].id+'</label><br/>';
+            //el = document.createElement("label");
+            //el.setAttribute("for", "book_" + i.toString());
+            //el.appendChild(document.createTextNode(vocabs[i].id));
+            //maindiv.appendChild(el);
+            //maindiv.appendChild(document.createElement("br"));
+        }
+        maindiv = document.getElementById("maindiv");
+        maindiv.innerHTML = s;
+        el = document.createElement("button");
+        el.setAttribute("onclick", "listAll()");
+        el.appendChild(document.createTextNode("List all"));
+        maindiv.appendChild(el);
+        maindiv.appendChild(document.createElement("br"));
+        el = document.createElement("button");
+        el.setAttribute("onclick", "startTest()");
+        el.appendChild(document.createTextNode("Start"));
+        maindiv.appendChild(el);
+        maindiv.appendChild(document.createElement("br"));
+    }
+    function listAll() {
+        maindiv = document.getElementById("maindiv");
+        
+        s = ''
+        for (var i = 0; i < vocabs.length; i++) {
+            if (document.getElementById("book_"+i.toString()).checked) {
+                for (var j = 0; j < vocabs[i]['data'].length; j++) {
+                    s += '<p><span style="color:tomato">'+vocabs[i]['data'][j]['latin']+': </span><span style="color:blue">'+vocabs[i]['data'][j]['DE']+'</span></p>';
+                }
+            }
+        }
+        maindiv.innerHTML = s
+    }
+    function startTest() {
+        vocabpool = [];
+        for (var i = 0; i < vocabs.length; i++) {
+            if (document.getElementById("book_"+i.toString()).checked) {
+                for (var j = 0; j < vocabs[i]['data'].length; j++) {
+                    vocabpool.push(vocabs[i]['data'][j])
+                }
+            }
+        }
+        shownext();
+
+    }
+    function shownext() {
+        maindiv = document.getElementById("maindiv");
+        i = 0;
+        i = Math.floor(Math.random() * vocabpool.length);
+        s = '<p><span style="color:tomato">'+vocabpool[i]['latin']+': </span>';
+        if (vocabpool[i]['gend'].trim().length>0) {
+            s += ' <span style="color:lightgrey">('+vocabpool[i]['gend']+')</span>';
+        }
+        if (vocabpool[i]['adend'].trim().length>0) {
+            s += ' <span style="color:grey">['+vocabpool[i]['adend']+']</span>';
+        }
+        s += '</p>';
+        s += '<p hidden="true" id="answer">'+'<span style="color:blue">['+vocabpool[i]['DE']+']</span>'+'</p>';
+        s += '<p><button onclick="check()" id="button1">prüfen</button><button hidden="true" id="button2"></button></p>';
+        maindiv.innerHTML = s;
+    }
+    function check() {
+        document.getElementById("answer").hidden=false;
+        document.getElementById("button1").innerText = "Gewusst!";
+        document.getElementById("button1").setAttribute("onclick","shownext()");
+        document.getElementById("button2").innerText = "Nicht ganz...";
+        document.getElementById("button2").setAttribute("onclick","shownext()");
+        document.getElementById("button2").hidden=false;
+    }
+</script>
+
+<body>
+    <div id="maindiv">
+    </div>
+</body>
+
+</html>
